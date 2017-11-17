@@ -1,240 +1,206 @@
 package sortalgorithm;
 
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class SortMain {
-    public static void main(String args[]) {	
+	public static void main(String args[]) {	
 
-        //FILE DATA - NEED TO HARD_CODE \\PATH\FILE (NO TIME)
-        
-    	String txtFile = "D:\\Sort_By_Brand_100K.txt";                      //FOR PC-WINDOWS
-        //String txtFile = "/Users/Clark/Desktop/record.txt";   //FOR MAC
+		//PARAMETER INFORMATION
+		String dataType = "AlphaNumeric";
+		String sortBy = "Brand";
+		String dataPoint = "100K";
+		int numOfSampling = 5;
+		
+		String txtFile = "D:\\" + dataType + "_" + sortBy + "_" + dataPoint + ".txt";
+		String sortedVal = sortBy;
 
-        BufferedReader br = null;
+		BufferedReader br = null;
         String line = "";
-        
-        //INVENTORY DATA MODEL
         Product[] products = null;
         Product prod = null;
-        
         int i = 0;
-    
-        try
-        {
-            
-            /*
-             * READ FILE DATA SOURCE
-            */
-                        
-            br = new BufferedReader(new FileReader(txtFile));     
-            int lineCount = (int)Files.lines(Paths.get(txtFile)).count();
-            System.out.println("Sorting: " + lineCount + " items\n");
-            products = new Product[lineCount]; 
+        int samplCtr = 0;
+		try
+		{			
+			br = new BufferedReader(new FileReader(txtFile));     
+	        int lineCount = (int)Files.lines(Paths.get(txtFile)).count();
+	        System.out.println("Sorting Qty: " + lineCount + " items");
+	        products = new Product[lineCount]; 
 
-            while ((line = br.readLine()) != null) {	
-                String[] data = line.split(",");
-                prod = new Product(data[0],data[1],data[2], Integer.parseInt(data[3]));                       
-                products[i]=prod;
-                i++;
-            }        
+	        while ((line = br.readLine()) != null) {	
+	            String[] data = line.split(",");
+	            prod = new Product(data[0],data[1],data[2], Integer.parseInt(data[3]));                       
+	            products[i]=prod;
+	            i++;
+	        }        
+	        
+	        long startTime;
+	        long stopTime;
+	        long elapsedTime;	
+	        Product[] prodUnsorted = null;
+	        
+	        long val1,val2,val3,val4,val5,val6,val7;
+	        
+	        //Initialize Sorting Class with added int parameters.
+	        //1 == Sort by Integer, 2 == Sort by String.
+	        int sortFlag = 2;  //<- set this to control switch flag. 	        
+	        String strType = sortFlag == 1 ? "Integer" : "String";
+	        
+	        ArrayList<String> samples = new ArrayList<String>();
+	        
+	        for(int sampl=0; sampl < numOfSampling; sampl++) {
 
-            //INITIALIZED TIMER
-            long startTime;
-            long stopTime;
-            //long elapsedTime;	
-            
-            long quickTime;
-            long mergeTime;
-            long heapTime;
-            long bubbleTime;
-            long insertTime;
-            long selectTime;
-            long radixTime;
+	        	samplCtr = sampl + 1;
+		        //-----------------------------------------------------	
+	        	System.out.println("\nSAMPLING [" + samplCtr + "]");
 
+	        	//Quick Sorting
+		        prodUnsorted = new Product[lineCount]; 
+		        prodUnsorted = products.clone();	        
+		        startTime = System.currentTimeMillis();	
+		        System.out.println("Sorting Quick..");
+		        QuickSort quickSort = new QuickSort(sortFlag);        
+		        quickSort.sort(prodUnsorted); 
+		        stopTime = System.currentTimeMillis();
+		        elapsedTime = stopTime - startTime;	 
+		        /*System.out.println("QUICK SORT");
+		        System.out.println("------------------------");
+		        System.out.println("BEG: " + startTime);
+		        System.out.println("END: " + stopTime);
+		        System.out.println("------------------------");
+		        System.out.println("Elapsed: " + elapsedTime +"\n" ); */	        
+		        val1=elapsedTime;
+	    
+		        //Merge Sorting
+		        prodUnsorted = new Product[lineCount]; 
+		        prodUnsorted = products.clone();	
+		        startTime = System.currentTimeMillis();	
+		        System.out.println("Sorting Merge..");
+		        MergeSort mergeSort = new MergeSort(sortFlag);
+		        mergeSort.sort(prodUnsorted);      
+		        stopTime = System.currentTimeMillis();
+		        elapsedTime = stopTime - startTime;	 
+		        /*System.out.println("MERGE SORT");
+		        System.out.println("------------------------");
+		        System.out.println("BEG: " + startTime);
+		        System.out.println("END: " + stopTime);	        
+		        System.out.println("------------------------");
+		        System.out.println("Elapsed: " + elapsedTime +"\n");*/
+		        val2=elapsedTime;
+		        
+		        //Heap Sorting
+		        prodUnsorted = new Product[lineCount]; 
+		        prodUnsorted = products.clone();
+		        startTime = System.currentTimeMillis();	
+		        System.out.println("Sorting Heap..");
+		        HeapSort heapSort = new HeapSort(sortFlag);
+		        heapSort.sort(prodUnsorted);      
+		        stopTime = System.currentTimeMillis();
+		        elapsedTime = stopTime - startTime;	 
+		        /*System.out.println("HEAP SORT");
+		        System.out.println("------------------------");
+		        System.out.println("BEG: " + startTime);
+		        System.out.println("END: " + stopTime);	        
+		        System.out.println("------------------------");
+		        System.out.println("Elapsed: " + elapsedTime +"\n");*/       
+		        val3=elapsedTime;
+		        
+		        //Bubble Sorting
+		        prodUnsorted = new Product[lineCount]; 
+		        prodUnsorted = products.clone();
+		        startTime = System.currentTimeMillis();	
+		        System.out.println("Sorting Bubble..");
+		        BubbleSort bubbleSort = new BubbleSort(sortFlag);
+		        bubbleSort.sort(prodUnsorted);    
+		        stopTime = System.currentTimeMillis();
+		        elapsedTime = stopTime - startTime;	   
+		        /*System.out.println("BUBBLE SORT");
+		        System.out.println("------------------------");
+		        System.out.println("BEG: " + startTime);
+		        System.out.println("END: " + stopTime);	        
+		        System.out.println("------------------------");
+		        System.out.println("Elapsed: " + elapsedTime +"\n");*/
+		        val4=elapsedTime;
+		        
+		        //Insertion Sorting
+		        prodUnsorted = new Product[lineCount]; 
+		        prodUnsorted = products.clone();
+		        startTime = System.currentTimeMillis();	
+		        System.out.println("Sorting Insert..");
+		        InsertionSort insertSort = new InsertionSort(sortFlag);
+		        insertSort.sort(prodUnsorted);    
+		        stopTime = System.currentTimeMillis();
+		        elapsedTime = stopTime - startTime;	   
+		        /*System.out.println("INSERTION SORT");
+		        System.out.println("------------------------");
+		        System.out.println("BEG: " + startTime);
+		        System.out.println("END: " + stopTime);	        
+		        System.out.println("------------------------");
+		        System.out.println("Elapsed: " + elapsedTime +"\n");*/
+		        val5=elapsedTime;
+		        
+		        //Selection Sorting
+		        prodUnsorted = new Product[lineCount]; 
+		        prodUnsorted = products.clone();
+		        startTime = System.currentTimeMillis();	
+		        System.out.println("Sorting Select..");
+		        SelectionSort selectSort = new SelectionSort(sortFlag);
+		        selectSort.sort(prodUnsorted);      
+		        stopTime = System.currentTimeMillis();
+		        elapsedTime = stopTime - startTime;	   
+		        /*System.out.println("SELECTION SORT");
+		        System.out.println("------------------------");
+		        System.out.println("BEG: " + startTime);
+		        System.out.println("END: " + stopTime);	        
+		        System.out.println("------------------------");
+		        System.out.println("Elapsed: " + elapsedTime +"\n");*/      
+		        val6=elapsedTime;
+		        
+		        //Radix Sorting	String      
+		        prodUnsorted = new Product[lineCount]; 
+		        prodUnsorted = products.clone();        
+		        startTime = System.currentTimeMillis();	
+		        System.out.println("Sorting Radix..");
+		        RadixSort radixSort = new RadixSort(sortFlag);	        
+		        radixSort.sort(prodUnsorted);
+		        stopTime = System.currentTimeMillis();
+		        elapsedTime = stopTime - startTime;	   
+		        /*System.out.println("RADIX SORT");
+		        System.out.println("------------------------");
+		        System.out.println("BEG: " + startTime);
+		        System.out.println("END: " + stopTime);	        
+		        System.out.println("------------------------");
+		        System.out.println("Elapsed: " + elapsedTime +"\n");*/      
+		        val7=elapsedTime;
+		        
+		        //Show Data for counter checking
+		        /*System.out.println("DATA: ");
+		        for(Product p : prodUnsorted ){
+		        	System.out.println(p.getName() + "," + p.getCategory() + "," +
+		         				p.getBrand() + "," + p.getQty());
+		        }*/ 
+		        //System.out.println("DATA TYPE,SORTED COLUMN,DATA POINT,QUICK,MERGE,HEAP,BUBBLE,INSERTTION,SELECTION,RADIX");
+		        //System.out.println("QUICK,MERGE,HEAP,BUBBLE,INSERTTION,SELECTION,RADIX");	        
+		        /*System.out.println(strType + "," + "QUANTITY" + "," + lineCount + "," +  val1 + "," + val2 + "," +
+		        		val3 + "," + val4 + "," + val5 + "," + val6 +  ","+ val7);*/
+		        
+		        samples.add(strType + "," + sortedVal + "," + dataPoint + "," +  val1 + "," + val2 + "," + val3 + "," + val4 + "," + val5 + "," + val6 +  ","+ val7);
+	        }
+	        //System.out.println( samples );
+	        System.out.println("DATA TYPE,SORTED COLUMN,DATA POINT,QUICK,MERGE,HEAP,BUBBLE,INSERTTION,SELECTION,RADIX");
 
-            /*
-             * QUICK SORT
-            */
+	        for (String n : samples )
+	            System.out.println(n);
 
-            startTime = System.currentTimeMillis();	
-
-            //PREFORM SORTING
-            QuickSort quickSort = new QuickSort();
-            quickSort.sort(products); 
-
-            stopTime = System.currentTimeMillis();
-            quickTime = stopTime - startTime;	 
-
-            System.out.println("QUICK SORT");
-            System.out.println("------------------");
-            System.out.println("BEG: " + startTime);
-            System.out.println("END: " + stopTime);
-            System.out.println("------------------");
-            System.out.println("Time Spent: " + quickTime +" milliseconds\n\n" );
-            
-            
-            
-            // DISPLAY DATA - ACTIVATE IF YOU NEED TO SHOW/CHECK SORTING 
-            // YOU'LL HAVE TO MOVE THIS UNDER/AFTER EACH SORTING ALGORITHM
-            /*
-            System.out.println("DATA: ");
-            for(Product p : products ){	
-            	System.out.println(p.getName() + "," + p.getCategory() + "," +
-             				p.getBrand() + "," + p.getQty());
-            }
-            */
-
-
-            /*
-             * MERGE SORT
-            */
-
-            mergeTime = System.currentTimeMillis();	
-            
-            //PREFORM SORTING
-            MergeSort mergeSort = new MergeSort();
-            mergeSort.sort(products);      
-            
-            stopTime = System.currentTimeMillis();
-            mergeTime = stopTime - startTime;	 
-            
-            System.out.println("MERGE SORT");
-            System.out.println("------------------");
-            System.out.println("BEG: " + startTime);
-            System.out.println("END: " + stopTime);	        
-            System.out.println("------------------");
-            System.out.println("Time Spent: " + mergeTime +" milliseconds\n");
-            
-            
-            /*
-             * HEAP SORT
-            */
-            
-            heapTime = System.currentTimeMillis();	
-            
-            //PREFORM SORTING
-            HeapSort heapSort = new HeapSort();
-            heapSort.sort(products);      
-            
-            stopTime = System.currentTimeMillis();
-            heapTime = stopTime - startTime;	 
-            
-            System.out.println("HEAP SORT");
-            System.out.println("------------------");
-            System.out.println("BEG: " + startTime);
-            System.out.println("END: " + stopTime);	        
-            System.out.println("------------------");
-            System.out.println("Time Spent: " + heapTime +" milliseconds\n");
-
-
-            /*
-             * BUBBLE SORT
-            */
-            
-            bubbleTime = System.currentTimeMillis();	
-            
-            //PREFORM SORTING
-            BubbleSort bubbleSort = new BubbleSort();
-            bubbleSort.sort(products);    
-            
-            stopTime = System.currentTimeMillis();
-            bubbleTime = stopTime - startTime;	   
-            
-            System.out.println("BUBBLE SORT");
-            System.out.println("------------------");
-            System.out.println("BEG: " + startTime);
-            System.out.println("END: " + stopTime);	        
-            System.out.println("------------------");
-            System.out.println("Time Spent: " + bubbleTime +" milliseconds\n");        
-
-            
-            /*
-             * INSERTION SORT
-            */
-            
-            startTime = System.currentTimeMillis();	
-            
-            //PREFORM SORTING
-            InsertionSort insertSort = new InsertionSort();
-            insertSort.sort(products);    
-
-            stopTime = System.currentTimeMillis();
-            insertTime = stopTime - startTime;	   
-
-            System.out.println("INSERTION SORT");
-            System.out.println("------------------");
-            System.out.println("BEG: " + startTime);
-            System.out.println("END: " + stopTime);	        
-            System.out.println("------------------");
-            System.out.println("Time Spent: " + insertTime +" milliseconds\n");   
-
-            
-            /*
-             * SELECTION SORT
-            */
-                        
-            startTime = System.currentTimeMillis();	
-            
-            //PREFORM SORTING
-            SelectionSort selectSort = new SelectionSort();
-            selectSort.sort(products);      
-            
-            stopTime = System.currentTimeMillis();
-            selectTime = stopTime - startTime;	   
-            
-            System.out.println("SELECTION SORT");
-            System.out.println("------------------");
-            System.out.println("BEG: " + startTime);
-            System.out.println("END: " + stopTime);	        
-            System.out.println("------------------");
-            System.out.println("Time Spent: " + selectTime +" milliseconds\n");
-
-            
-            /*
-             * RADIX SORT
-            */
-                        
-            startTime = System.currentTimeMillis();	
-            
-            //PREFORM SORTING
-            RadixSort radixSort = new RadixSort();
-            radixSort.sort(products, lineCount);	        
-            
-            stopTime = System.currentTimeMillis();
-            radixTime = stopTime - startTime;	   
-            
-            System.out.println("RADIX SORT");
-            System.out.println("------------------");
-            System.out.println("BEG: " + startTime);
-            System.out.println("END: " + stopTime);	        
-            System.out.println("------------------");
-            System.out.println("Time Spent: " + radixTime +" milliseconds\n");
-            
-            System.out.println(txtFile);
-            System.out.println("1,Quick Sort,"  + quickTime );
-            System.out.println("2,Merge Sort, "  + mergeTime  );
-            System.out.println("3,Heap Sort," +  heapTime  );
-            System.out.println("4,Bubble Sort," +  bubbleTime  );
-            System.out.println("5,Insertion Sort," + insertTime  );
-            System.out.println("6,Selection Sort," +  selectTime  );
-            System.out.println("7,Radix Sort, " +  radixTime  );
-            
-            /*System.out.println("Quick Sort," + startTime + "," +  stopTime + "," + quickTime );
-            System.out.println("Merge Sort, " + startTime + "," +  stopTime + "," + mergeTime  );
-            System.out.println("Heap Sort," + startTime + "," +  stopTime + "," + heapTime  );
-            System.out.println("Bubble Sort," + startTime + "," +  stopTime + "," + bubbleTime  );
-            System.out.println("Insertion Sort," + startTime + "," +  stopTime + "," + insertTime  );
-            System.out.println("Selection Sort," + startTime + "," +  stopTime + "," + selectTime  );
-            System.out.println("Radix Sort, " + startTime + "," +  stopTime + "," + radixTime  );*/
-            
-            br.close();
-            
-        }
-        catch(Exception ex){
-            System.out.println(ex.getMessage());
-        }
+	        br.close();
+		}
+	    catch(Exception ex){
+	    	System.out.println(ex.getCause());
+	    } 
     }
 }

@@ -1,33 +1,102 @@
 package sortalgorithm;
 
 public class MergeSort {
+	
+	int _flow = -1;
+	
+	public MergeSort(int flow)
+	{
+		_flow = flow;
+	}
+	
     private Product[] numbers;
     private Product[] helper;
 
     private int number;
+	
+	public void sort(Product arr[])
+	{
+		if ( _flow == 1){
+			sortInteger(arr, 0, arr.length-1);
+		}
+		else if ( _flow == 2){
+	        this.numbers = arr;
+	        number = arr.length;
+	        this.helper = new Product[number];
+	        mergeString(0, number - 1);
+		}
+	}
+	
+	private void CombineIntArr(Product arr[], int l, int m, int r)
+    {
+        int n1 = m - l + 1;
+        int n2 = r - m;
+ 
+     
+        Product L[] = new Product [n1];
+        Product R[] = new Product [n2];
+ 
+     
+        for (int i=0; i<n1; ++i)
+            L[i] = arr[l + i];
+        for (int j=0; j<n2; ++j)
+            R[j] = arr[m + 1+ j];
+ 
+ 
 
-    public void sort(Product[] values) {
-        this.numbers = values;
-        number = values.length;
-        this.helper = new Product[number];
-        mergesort(0, number - 1);
-    }
+        int i = 0, j = 0;
+ 
+   
+        int k = l;
+        while (i < n1 && j < n2)
+        {
+            if (L[i].getQty() <= R[j].getQty())
+            {
+                arr[k] = L[i];
+                i++;
+            }
+            else
+            {
+                arr[k] = R[j];
+                j++;
+            }
+            k++;
+        }
+ 
 
-    private void mergesort(int low, int high) {
-        // check if low is smaller than high, if not then the array is sorted
-        if (low < high) {
-            // Get the index of the element which is in the middle
-            int middle = low + (high - low) / 2;
-            // Sort the left side of the array
-            mergesort(low, middle);
-            // Sort the right side of the array
-            mergesort(middle + 1, high);
-            // Combine them both
-            merge(low, middle, high);
+        while (i < n1)
+        {
+            arr[k] = L[i];
+            i++;
+            k++;
+        }
+ 
+
+        while (j < n2)
+        {
+            arr[k] = R[j];
+            j++;
+            k++;
         }
     }
-
-    private void merge(int low, int middle, int high) {
+ 
+	private void sortInteger(Product arr[], int l, int r)
+    {
+        if (l < r)
+        {
+            // Find the middle point
+            int m = (l+r)/2;
+ 
+            // Sort first and second halves
+            sortInteger(arr, l, m);
+            sortInteger(arr , m+1, r);
+ 
+            // Merge the sorted halves
+            CombineIntArr(arr, l, m, r);
+        }
+    }
+	
+    private void CombineStrArr(int low, int middle, int high) {
 
         // Copy both parts into the helper array
         for (int i = low; i <= high; i++) {
@@ -62,5 +131,23 @@ public class MergeSort {
         // are already at the right position.
 
     }
+	
+    private void mergeString(int low, int high) {
+        // check if low is smaller than high, if not then the array is sorted
+        if (low < high) {
+            // Get the index of the element which is in the middle
+            int middle = low + (high - low) / 2;
+            // Sort the left side of the array
+            mergeString(low, middle);
+            // Sort the right side of the array
+            mergeString(middle + 1, high);
+            // Combine them both
+            CombineStrArr(low, middle, high);
+        }
+    }
+	
+   
+
 
 }
+
